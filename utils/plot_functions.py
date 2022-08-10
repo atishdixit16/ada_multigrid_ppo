@@ -216,7 +216,7 @@ def plot_learning(log_dir, case='train', multigrid='False'):
         axs.plot(r)
     else:
         axs.plot(t,r)
-    axs.grid('on')
+    axs.grid('on', alpha=0.3)
     axs.set_xlabel('number of timesteps')
     axs.set_ylabel('rewards')
     return fig
@@ -230,7 +230,7 @@ def plot_learning_tr(ts,rs, axs,legends=None, ref_value=None, window=5,
         axs.plot(t,r)
     axs.set_xlabel(x_label)
     axs.set_ylabel(y_label)
-    axs.grid('on')
+    axs.grid('on', alpha=0.3)
     if ref_value is not None:
         axs.hlines(ref_value, xmin=np.min(t), xmax=np.max(t), color='gray', linestyles='dashed')
         if legends is not None:
@@ -253,7 +253,7 @@ def plot_rl(log_dirs, legends, ref_value=None):
         axs.plot(t,r)
     axs.set_xlabel('number of timesteps')
     axs.set_ylabel('rewards')
-    axs.grid('on')
+    axs.grid('on', alpha=0.3)
     if ref_value is not None:
         axs.hlines(ref_value, xmin=np.min(t), xmax=np.max(t), color='gray', linestyles='dashed')
         legends.append('DE')
@@ -322,7 +322,7 @@ def plot_rewards(r_array_eval, axs, model_names):
     axs.set_xticks(indices)
     axs.set_xticklabels(sort_indices)
     axs.set_title('Optimisation Results for Evaluation Permeabilities')
-    axs.grid('on')
+    axs.grid('on', alpha=0.3)
     return 
 
 def plot_rewards_wo_de(r_array_eval, axs, model_names):
@@ -346,5 +346,5 @@ def plot_rewards_wo_de(r_array_eval, axs, model_names):
     axs.set_xticks(indices)
     axs.set_xticklabels(sort_indices)
     axs.set_title('Optimisation Results for Evaluation Permeabilities')
-    axs.grid('on')
+    axs.grid('on', alpha=0.3)
     return 

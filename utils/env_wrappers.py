@@ -3,7 +3,7 @@ from stable_baselines3.common.type_aliases import GymStepReturn
 import numpy as np
 from gym import spaces
 from collections import deque
-from utils.coarse_grid_functions import get_accmap, fine_to_coarse_mapping, coarse_to_fine_mapping
+from utils.coarse_grid_functions import get_partition_ind, fine_to_coarse_mapping, coarse_to_fine_mapping
 from numpy import sum, mean
 from scipy.stats import hmean
 from copy import copy
@@ -125,7 +125,7 @@ class EnvCoarseWrapper(gym.Wrapper):
         self.env.fine_n_prod = copy(self.env.n_prod)
         self.env.fine_i_x, self.env.fine_i_y = copy(self.env.i_x), copy(self.env.i_y)
         self.env.fine_p_x, self.env.fine_p_y = copy(self.env.p_x), copy(self.env.p_y)
-        self.accmap = get_accmap(self.fine_grid, coarse_nx, coarse_ny)
+        self.accmap = get_partition_ind(self.fine_grid.nx, self.fine_grid.ny, coarse_nx, coarse_ny)
         
         # coarsen grid
         self.env.grid.nx = coarse_nx
@@ -134,15 +134,15 @@ class EnvCoarseWrapper(gym.Wrapper):
         # corasen k
         k_coarse = []
         for k in self.env.k_list:
-            k_coarse.append(fine_to_coarse_mapping(k, self.accmap, func=hmean))
+            k_coarse.append(fine_to_coarse_mapping(k, self.accmap, func='hmean'))
         self.env.k_list = np.array(k_coarse)
         
         # coarsen phi
-        phi_coarse = fine_to_coarse_mapping(self.env.phi, self.accmap, func=mean)
+        phi_coarse = fine_to_coarse_mapping(self.env.phi, self.accmap, func='mean')
         self.env.phi = phi_coarse
         
         # coarsen q
-        q_coarse = fine_to_coarse_mapping(self.env.q, self.accmap, func=sum)
+        q_coarse = fine_to_coarse_mapping(self.env.q, self.accmap, func='sum')
         self.env.q_init = q_coarse# storing inital values for reset function
         self.env.q = q_coarse
         
@@ -155,7 +155,7 @@ class EnvCoarseWrapper(gym.Wrapper):
         self.env.p_x, self.env.p_y =  np.where(self.env.q<-self.env.tol)[0], np.where(self.env.q<-self.env.tol)[1]    # producer co-ordinates
         
         # coarsen s
-        s_coarse = fine_to_coarse_mapping(self.env.s, self.accmap, func=mean)
+        s_coarse = fine_to_coarse_mapping(self.env.s, self.accmap, func='mean')
         self.env.s = s_coarse
         self.env.s_load = s_coarse
         self.env.state = self.env.s_load.reshape(-1)
@@ -193,7 +193,7 @@ class EnvCoarseWrapper(gym.Wrapper):
             prod_flow = fine_action
         fine_action_grid[self.fine_q<-self.env.tol] = prod_flow
         
-        coarse_action_grid = fine_to_coarse_mapping(fine_action_grid, self.accmap, func=sum)
+        coarse_action_grid = fine_to_coarse_mapping(fine_action_grid, self.accmap, func='sum')
         if isinstance(self.env,ResSimEnv_v1):
             inj_flow_coarse = coarse_action_grid[self.env.q>self.env.tol]
         if isinstance(self.env,ResSimEnv_v0):
