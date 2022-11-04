@@ -4,6 +4,7 @@ Code repository for the following paper:
 - Title: Simulation-based robust optimal control using an adaptive multi-grid reinforcement learning framework
 - Authors: Atish Dixit, Ahmed H. ElSheikh
 - Affiilation: School of Energy, geoscience, infrastructure and society, Heriot-Watt University, Edinburgh, UK
+- Preprint: https://arxiv.org/abs/2207.03253
 - Journal: 
 - DOI:
 
